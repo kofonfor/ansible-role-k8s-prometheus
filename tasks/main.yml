@@ -1,0 +1,5 @@
+- name: put values
+  template: src=values.yml dest=/tmp/prom-{{ prometheus_helm_release }}.yml
+
+- name: upgrade {{ prometheus_helm_release }} release using a Helm chart
+  shell: helm upgrade {{ prometheus_helm_release }} stable/prometheus --install --recreate-pods --namespace {{ k8s_namespace }} -f /tmp/prom-{{ prometheus_helm_release }}.yml
