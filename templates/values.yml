@@ -1,3 +1,8 @@
 server:
   service:
-    type: LoadBalancer
+    type: {{ k8s_prometheus_service_type }}
+  persistentVolume:
+    storageClass: "{{ storage_class_name }}"
+alertmanager:
+  persistentVolume:
+    storageClass: "{{ storage_class_name }}"
