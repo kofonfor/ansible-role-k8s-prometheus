@@ -1,2 +1,13 @@
 k8s_prometheus_service_type: LoadBalancer
 storage_class_name: standard
+k8s_prometheus_alert_groups:
+  - name: NodeAlerts
+    rules:
+    - name: NodeCPUUsage
+      expr: '(100 - (avg(irate(node_cpu_seconds_total{mode="idle"}[5m])) BY (instance) * 100)) > 95'
+      duration: 10m
+      labels:
+        severity: alert
+      annotations:
+        description: 'labels.instance: CPU usage is above 95% (current value is: value )'
+        summary: 'labels.instance: High CPU usage detect'

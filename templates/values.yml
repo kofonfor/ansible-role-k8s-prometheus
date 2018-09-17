@@ -24,16 +24,23 @@ alertmanagerFiles:
 serverFiles:
   alerts:
     groups:
-    - name: NodeAlerts
+{% for group in k8s_prometheus_alert_groups %}
+    - name: {{ group.name }}
       rules:
-      - alert: NodeCPUUsage
-        expr: (100 - (avg(irate(node_cpu_seconds_total{mode="idle"}[5m])) BY (instance) * 100)) > 50
-        for: 2m
+{% for rule in group.rules %}
+      - alert: {{ rule.name }}
+        expr: {{ rule.expr }}
+        for: {{ rule.duration }}
         labels:
-          severity: alert
+{% for key,value in rule.labels.iteritems() %}
+          {{ key }}: {{ value }}
+{% endfor %}
         annotations:
-          description: 'labels.instance: CPU usage is above 50% (current value is: value )'
-          summary: 'labels.instance: High CPU usage detect'
+{% for key,value in rule.annotations.iteritems() %}
+          {{ key }}: '{{ value }}'
+{% endfor %}
+{% endfor %}
+{% endfor %}
   prometheus.yml:
     rule_files:
       - /etc/config/rules
@@ -293,6 +300,7 @@ serverFiles:
 
 {% for job in k8s_prometheus_jobs %}
       - job_name: {{ job.name }}
+        metrics_path: {{ job.metrics_path }}
         static_configs:
           - targets:
 {% for target in job.targets %}
