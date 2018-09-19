@@ -11,3 +11,4 @@ k8s_prometheus_alert_groups:
       annotations:
         description: 'labels.instance: CPU usage is above 95% (current value is: value )'
         summary: 'labels.instance: High CPU usage detect'
+k8s_prometheus_jobs: {}
