@@ -1,7 +1,9 @@
 server:
   service:
     type: {{ k8s_prometheus_service_type }}
+{% if k8s_prometheus_service_type == "NodePort" %}
     nodePort: {{ k8s_prometheus_service_nodeport }}
+{% endif %}
   persistentVolume:
     storageClass: "{{ storage_class_name }}"
 alertmanager:
