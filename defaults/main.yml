@@ -12,3 +12,9 @@ k8s_prometheus_alert_groups:
         description: 'labels.instance: CPU usage is above 95% (current value is: value )'
         summary: 'labels.instance: High CPU usage detect'
 k8s_prometheus_jobs: {}
+k8s_prometheus_receivers:
+  - name: default-receiver
+    configs:
+      slack_configs:
+        - channel: "'#alerting'"
+          send_resolved: "true"
