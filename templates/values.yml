@@ -12,7 +12,9 @@ alertmanager:
 alertmanagerFiles:
   alertmanager.yml:
     global:
+{% if k8s_prometheus_slack_api_url is defined %}
       slack_api_url: '{{ k8s_prometheus_slack_api_url }}'
+{% endif %}
     receivers:
 {% for receiver in k8s_prometheus_receivers %}
       - name: {{ receiver.name }}
