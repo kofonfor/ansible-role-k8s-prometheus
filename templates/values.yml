@@ -314,8 +314,21 @@ serverFiles:
       - job_name: {{ job.name }}
         metrics_path: {{ job.metrics_path }}
         static_configs:
+{% if job.targets.ansible_group_name is defined %}
+{% for host in groups[job.targets.ansible_group_name] %}
+          - targets:
+{% if hostvars[host]["prometheus_" + job.name + "_exporter_interface"] is defined %}
+            - {{ hostvars[host]["ansible_" + hostvars[host]["prometheus_" + job.name + "_exporter_interface"]]["ipv4"]["address"]}}:{{ job.targets.port }}
+{% else %}
+            - {{ hostvars[host]['ansible_default_ipv4']['address'] }}:{{ job.targets.port }}
+{% endif %}
+            labels:
+              ansible_inventory_hostname: {{ hostvars[host]['inventory_hostname'] }}
+{% endfor %}
+{% else %}
           - targets:
 {% for target in job.targets %}
             - {{ target.host }}:{{ target.port }}
 {% endfor %}
+{% endif %}
 {% endfor %}
